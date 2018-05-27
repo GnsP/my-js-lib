@@ -1,0 +1,121 @@
+@max-grid-cells: 16;
+
+.cell {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+
+  & > :not(.cell) {
+    width: 100%;
+  }
+
+  &-w-narrow {
+    width: fit-content;
+  }
+
+  &-w-grow {
+    flex-grow: 1;
+  }
+}
+
+.gcd(@a, @b, @c) when (@c = 0) {
+  @gcd-res: @b;
+}
+
+.gcd(@a, @b, @c) when not(@c = 0) {
+  .gcd(@b, mod(@a, @b))
+}
+
+.gcd(@a, @b) {
+  @c: mod(@a, @b);
+  .gcd(@a, @b, @c);
+}
+
+.make-grid(@max-cells) when (@max-cells < (@max-grid-cells+1)) {
+  .make-row(@max-cells);
+  .make-grid((@max-cells + 1));
+}
+
+.make-row(@cells) {
+  .cell-d-@{cells}, .cell-n-@{cells}, .cell-o-@{cells} {
+    &:extend(.cell);
+  }
+  .make-cells(@cells);
+}
+
+.make-cells(@cells) {
+  .cell(@index) when (@index =< @cells) {
+    .ratio(@index, @cells);
+    .cell((@index + 1));
+  }
+
+  .cell(1);
+}
+
+.ratio(@num, @denum) {
+  .gcd(@num, @denum);
+  .width-ratio(@num, @denum, @gcd-res);
+}
+
+.width-ratio(@n, @d, @g) when (@g = 1) {
+  @parent-selector: ~".cell-d-@{d}";
+  @child-selector: ~".cell-n-@{n}";
+
+  .nest(@factor, @upperbound, @acc, @offset-acc) when (@factor = 1) and (@upperbound =< @max-grid-cells) {
+    @d-prime: (@d * @factor);
+    @n-prime: (@n * @factor);
+
+    @parent-selector: ~".cell-d-@{d-prime}";
+    @child-selector: ~".cell-n-@{n-prime}";
+    @offset-selector: ~".cell-o-@{n-prime}";
+
+    @sel: ~"@{parent-selector}";
+
+    @newacc: ~"@{sel}>@{child-selector}";
+    @new-offset-acc: ~"@{sel}>@{offset-selector}";
+
+    @newfactor: (@factor + 1);
+    @newupperbound: (@newfactor * @d);
+    .nest(@newfactor, @newupperbound, @newacc, @new-offset-acc);
+  }
+
+  .nest(@factor, @upperbound, @acc, @offset-acc) when not(@factor = 1) and (@upperbound =< @max-grid-cells) {
+    @d-prime: (@d * @factor);
+    @n-prime: (@n * @factor);
+
+    @parent-selector: ~".cell-d-@{d-prime}";
+    @child-selector: ~".cell-n-@{n-prime}";
+    @offset-selector: ~".cell-o-@{n-prime}";
+
+    @sel: ~"@{parent-selector}";
+
+    @newacc: ~"@{acc}, @{sel}>@{child-selector}";
+    @new-offset-acc: ~"@{offset-acc}, @{sel}>@{offset-selector}";
+
+    @newfactor: (@factor + 1);
+    @newupperbound: (@newfactor * @d);
+    .nest(@newfactor, @newupperbound, @newacc, @new-offset-acc);
+  }
+
+  .nest (@factor, @upperbound, @acc, @offset-acc) when (@upperbound > @max-grid-cells) {
+    @{acc} {
+      width: percentage((@n/@d));
+    }
+
+    @{offset-acc} {
+      margin-left: percentage((@n/@d));
+    }
+  }
+
+  .nest( 1, @d, ~"", ~"");
+
+}
+
+.make-grid(1);

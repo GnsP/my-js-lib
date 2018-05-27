@@ -1,0 +1,64 @@
+@import ~"../../design/base/style.less";
+
+@segmented-prefix: ~"@{namespace}-segmented";
+
+.@{segmented-prefix} {
+    &-horz, &-vert {
+        display: flex;
+        width: 100%;
+        align-items: stretch;
+        justify-content: space-between;
+    }
+
+    &-horz {
+        flex-direction: row;
+
+        & > .@{segmented-prefix}-divider {
+            display: block;
+            position: relative;
+            width: 12px;
+            cursor: ew-resize;
+
+            &:before {
+                display: block;
+                content: ' ';
+                background: grey;
+                width: 2px;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 5px;
+            }
+        }
+    }
+
+    &-vert {
+        flex-direction: column;
+
+        & > .@{segmented-prefix}-divider {
+            display: block;
+            position: relative;
+            height: 12px;
+            cursor: ns-resize;
+
+            &:before {
+                display: block;
+                content: ' ';
+                background: grey;
+                height: 2px;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 5px;
+            }
+
+        }
+    }
+
+    &-segment {
+        flex-grow: 1;
+        display: flex;
+        align-items: stretch;
+        justify-content: center;
+    }
+}
