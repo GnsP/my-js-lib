@@ -1,0 +1,101 @@
+@component-prefix: ~"purism-horizontal-scroll";
+
+.@{component-prefix} {
+  &-row {
+    position: relative;
+    display: flex;
+    width: auto;
+    padding: 0;
+    align-items: stretch;
+    justify-content: center;
+    overflow-y: visible;
+  }
+
+  &-left-button-bar, &-right-button-bar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+
+    padding: 0px 10px;
+    display: flex;
+    z-index: 2;
+    align-items: center;
+    visibility: visible;
+
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+    transition-delay: 0s;
+
+    &.hide-d {
+      transition: visibility 0s linear 0.3s opacity 0.3s ease-in-out;
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+
+  &-left-button-bar {
+    left: 0;
+    padding-left: 20px;
+  }
+
+  &-right-button-bar {
+    right: 0;
+    padding-right: 20px;
+  }
+
+  &-button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  &-circular-button {
+    padding: 15px;
+    text-align: center;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+  }
+
+  &-container {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+
+    & > ul {
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      align-items: stretch;
+      width: 100%;
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      & > li {
+        display: inline-flex;
+        position: relative;
+        flex: 0 0 auto;
+        width: auto;
+        margin-right: 5px;
+        transition: width 0.3s linear, top 0.3s linear;
+      }
+    }
+  }
+}
+
+.unstyledA {
+  text-decoration: inherit;
+  color: inherit;
+  font-weight: inherit;
+}
